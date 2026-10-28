@@ -31,10 +31,10 @@ if errorlevel 1 (
  pause
  exit /b 1
 )
-"%PY%" -c "import streamlit, pandas, openpyxl, xlsxwriter" >nul 2>&1
+"%PY%" -c "import streamlit, pandas, openpyxl" >nul 2>&1
 if errorlevel 1 (
  echo Installing required packages...
- "%PY%" -m pip install streamlit pandas openpyxl xlsxwriter
+ "%PY%" -m pip install streamlit pandas openpyxl
  if errorlevel 1 (
   echo ERROR: Package installation failed.
   pause
