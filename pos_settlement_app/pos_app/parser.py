@@ -120,7 +120,26 @@ def _find_header_and_columns(raw):
     date_col = get_col_index(EXPECTED_HEADERS['date'], 0)
     detail_col = get_col_index(EXPECTED_HEADERS['detail'], 1)
     desc_col = get_col_index(EXPECTED_HEADERS['desc'], 2)
-    code_col = get_col_index(EXPECTED_HEADERS['code'], 3)
+    code_col = get_col_index(EXPECTED_HEADERS['code'], None)
+
+    # التحقق الذكي من عمود رمز الحركة (XZ / FZ)
+    # إذا لم يُعثر عليه بالاسم أو لم يحتوِ العمود المحدد على أي من الرموز، نفحص باقي الأعمدة
+    has_codes = False
+    if code_col is not None and code_col < len(header_names):
+        sample_vals = raw.iloc[header_idx + 1:min(header_idx + 300, len(raw)), code_col].dropna().astype(str).str.strip().str.upper()
+        if sample_vals.isin([CODE_DEPOSIT, CODE_FEE]).any():
+            has_codes = True
+
+    if not has_codes:
+        for c in range(len(header_names)):
+            sample_vals = raw.iloc[header_idx + 1:min(header_idx + 300, len(raw)), c].dropna().astype(str).str.strip().str.upper()
+            if sample_vals.isin([CODE_DEPOSIT, CODE_FEE]).any():
+                code_col = c
+                has_codes = True
+                break
+
+    if code_col is None:
+        code_col = 3
 
     return header_idx, {
         'date': date_col,
@@ -188,8 +207,8 @@ def read_bank(data):
         if debit is None or credit is None:
             notes.append('مبلغ غير قابل للقراءة')
             
-        debit_val = debit if debit is not None else Decimal('0')
-        credit_val = credit if credit is not None else Decimal('0')
+        debit_val = abs(debit) if debit is not None else Decimal('0')
+        credit_val = abs(credit) if credit is not None else Decimal('0')
 
         direction_ok = (
             (code == CODE_DEPOSIT and credit_val > 0 and debit_val == 0) or

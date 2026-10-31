@@ -38,9 +38,9 @@ AUDIT_STATUS_EXCLUDED = 'مستبعد'
 # أعمدة كشف البنك المتوقعة للبحث الديناميكي
 EXPECTED_HEADERS = {
     'date': ['[SA]Processing Date', 'تاريخ التنفيذ', 'Processing Date', 'تاريخ المعالجة', 'التاريخ'],
-    'detail': ['التفاصيل', 'Details', 'تفاصيل الحركة'],
+    'detail': ['التفاصيل', 'Details', 'تفاصيل الحركة', 'Transaction Description'],
     'desc': ['الوصف', 'Description', 'بيان الحركة', 'البيان'],
-    'code': ['رمز الحركة', 'Code', 'الرمز', 'النوع'],
+    'code': ['رمز الحركة', 'Code', 'الرمز', 'النوع', 'Remarks', 'ملاحظات', 'Transaction Code'],
     'debit': ['مدين', 'Debit', 'سحب'],
     'credit': ['دائن', 'Credit', 'إيداع']
 }
